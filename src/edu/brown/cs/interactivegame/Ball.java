@@ -46,6 +46,9 @@ public class Ball {
    */
   private Color ballColor = Color.BLACK;
 
+  private double cpuUsage;
+  private final String pid;
+
   /**
    * Constructs a new ball object with x position, y position and Launcher object where ball moves.
    * in.
@@ -54,9 +57,11 @@ public class Ball {
    * @param y         - vertical position
    * @param animation - Launcher object where ball moves in
    */
-  public Ball(int x, int y, double cpuUsage, Launcher animation) {
+  public Ball(int x, int y, double cpuUsage, String pid, Launcher animation) {
     this.x = x;
     this.y = y;
+    this.cpuUsage = cpuUsage;
+    this.pid = pid;
     this.diameter = (int) (15 + cpuUsage * 3); // cpuUsage used to compute diameter
     this.animation = animation;
     this.collided = false;
@@ -154,4 +159,20 @@ public class Ball {
       }
     }
   }
+
+  public String getPid() {
+    return this.pid;
+  }
+
+  public void setCpuUsage(double cpuUsage) {
+    this.cpuUsage =  cpuUsage;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (!(obj instanceof Ball other)) return false;
+    return this.pid.equals(other.pid);
+  }
+
 }
