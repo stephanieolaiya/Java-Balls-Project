@@ -47,7 +47,7 @@ public class ProcessMonitor implements Runnable {
           String pid = fields[0];
           String command = fields[1];
           double cpuUsage = Double.parseDouble(fields[2]);
-          if (cpuUsage > 0.0) {
+//          if (cpuUsage > 0.0) {
             // Add a new ball for each process that has cpu usage > 0
             if ((this.animation.getWidth() < 1) || (this.animation.getHeight() < 1)) {
               this.balls.add(new Ball(5, 5, cpuUsage, this.animation));
@@ -56,7 +56,7 @@ public class ProcessMonitor implements Runnable {
               int y = new Random().nextInt(this.animation.getHeight());
               this.balls.add(new Ball(x, y, cpuUsage, this.animation));
             }
-          }
+//          }
         }
         Thread.sleep(10000); // Sleep for 2 seconds before the next poll
       } catch (Exception e) {
