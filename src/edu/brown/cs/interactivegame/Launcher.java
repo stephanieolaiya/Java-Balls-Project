@@ -8,6 +8,7 @@ import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -28,42 +29,28 @@ public class Launcher extends JPanel {
 		Launcher animation = new Launcher();
 		window.add(animation);
 		window.setUndecorated(true);
-		window.setShape(new Ellipse2D.Double(0, 0, 950, 500));
-		window.setSize(1000, 500);
-
-		JButton start = new JButton("Start");
-		start.addActionListener(e -> animation.initializeAnimation());
-		JButton reset = new JButton("Reset");
-		reset.addActionListener(e -> animation.initializeAnimation());
-
-		JPanel btnPnl = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		btnPnl.add(start);
-		btnPnl.add(reset);
-
-		window.add(btnPnl, BorderLayout.SOUTH);
+		window.setShape(new Ellipse2D.Double(0, 0, 1000, 800));
+		window.setSize(1000, 800);
 		window.setVisible(true);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-//		while (true) {
-//			animation.move(); // make all items in launcher animation move
-//			animation.repaint(); // repaint after changes
-//			Thread.sleep(10);
-//		}
+		while (true) {
+			animation.move(); // make all items in launcher animation move
+			animation.repaint(); // repaint after changes
+			Thread.sleep(10);
+		}
 	}
 
 	/**
 	 * List of balls in animation.
 	 */
-	private List<Ball> balls = new ArrayList<>();
+	private List<Ball> balls = new CopyOnWriteArrayList<>();
 
 	/**
 	 * Constructor for game launcher.
 	 */
 	public Launcher() {
-//		this.executorService = Executors.newFixedThreadPool(20); // Create a thread pool
-		MouseListener listener = new ClickListener(this.balls, this);
-		this.addMouseListener(listener); // add mouse listener to the frame.
-
+		new Thread(new ProcessMonitor(this.balls, this)).start();
 	}
 
 	/**
@@ -75,29 +62,10 @@ public class Launcher extends JPanel {
 		return this.balls;
 	}
 
-	/**
-	 * Reinitialized animation so that only one ball is moving around screen.
-	 */
-	public void initializeAnimation() {
-		long startTime = System.nanoTime(); // Start timing
-
-		this.balls.clear();
-		this.initializeBallList(30);
-		for (Ball ball : this.balls) {
-			new Thread(ball).start(); // Start a new thread for the ball
-		}
-		this.repaint(); // not sure to remove or not
-
-		long endTime = System.nanoTime(); // End timing
-		long duration = endTime - startTime; // Calculate duration in nanoseconds
-
-		System.out.println("Time to initialize animation: " + duration / 1_000_000 + " ms"); // Convert to ms
-	}
 
 	public void addBall(int x, int y) {
-		Ball ball = new Ball(x, y, this);
+		Ball ball = new Ball(x, y, 4.0, this);
 		this.balls.add(ball);
-		new Thread(ball).start(); // Start a new thread for the ball
 	}
 
 	@Override
@@ -111,23 +79,14 @@ public class Launcher extends JPanel {
 		}
 	}
 
-	private void initializeBallList(int x) {
-		Random random = new Random();
-		for (int i = 0; i < x; i++) {
-			// Create a new object with randomized variables
-			Ball newBall = new Ball(random.nextInt(100), random.nextInt(100), this);
-			this.balls.add(newBall);
+
+	/**
+	 * Calls move function for all balls currently in the launcher.
+	 */
+	private void move() {
+		for (Ball ball : this.balls) {
+			ball.move();
 		}
 	}
-
-//	/**
-//	 * Calls move function for all balls currently in the launcher.
-//	 */
-//	private void move() {
-//		for (Ball ball : this.balls) {
-//			ball.move();
-//		}
-//	}
-
 
 }
