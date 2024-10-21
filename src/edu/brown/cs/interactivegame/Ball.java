@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.Random;
-import java.util.concurrent.Callable;
-import javax.swing.SwingUtilities;
 
 /**
  * Ball A ball object that moves around the screen.

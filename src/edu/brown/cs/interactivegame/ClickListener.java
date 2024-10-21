@@ -2,8 +2,6 @@ package edu.brown.cs.interactivegame;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 /**
  * ClickListener
