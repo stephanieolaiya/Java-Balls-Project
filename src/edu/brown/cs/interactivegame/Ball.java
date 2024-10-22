@@ -44,7 +44,8 @@ public class Ball {
   /**
    * Color of ball. Default it black.
    */
-  private Color ballColor = Color.BLACK;
+  Random r = new Random();
+  private Color ballColor = new Color(r.nextInt(256), r.nextInt(256), r.nextInt(256));;
 
   private double cpuUsage;
   private final String pid;
@@ -62,7 +63,7 @@ public class Ball {
     this.y = y;
     this.cpuUsage = cpuUsage;
     this.pid = pid;
-    this.diameter = (int) (15 + cpuUsage * 3); // cpuUsage used to compute diameter
+    this.diameter = (int) (15 + cpuUsage * 0.3); // cpuUsage used to compute diameter
     this.animation = animation;
     this.collided = false;
   }
@@ -97,17 +98,7 @@ public class Ball {
    */
   public void paint(Graphics2D g2d) {
     g2d.fillOval(this.x, this.y, this.diameter, this.diameter); // adding a single ball
-    if (this.collided) {
-      if (this.ballColor.equals(Color.BLACK)) {
-        Random r = new Random();
-        this.ballColor = new Color(r.nextInt(256), r.nextInt(256), r.nextInt(256));
-        g2d.setColor(this.ballColor);
-      } else {
-        g2d.setColor(this.ballColor);
-      }
-    } else {
       g2d.setColor(this.ballColor);
-    }
     g2d.fillOval(this.x, this.y, this.diameter, this.diameter); // adding a single ball
   }
 

@@ -37,7 +37,7 @@ public class Launcher extends JPanel {
   /**
    * List of balls in animation.
    */
-  private List<Ball> balls = new CopyOnWriteArrayList<>();
+  private final List<Ball> balls = new CopyOnWriteArrayList<>();
 
   /**
    * Constructor for game launcher.
