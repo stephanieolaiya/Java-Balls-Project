@@ -9,16 +9,27 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * ProcessMonitor
+ * ProcessMonitor - gets all system processes and modifies ball list in a separate thread.
  *
  * @author Stephanie Olaiya Date: 10/20/24
  */
 public class ProcessMonitor implements Runnable {
 
+  /**
+   * current list of balls.
+   */
   private final List<Ball> balls;
+  /**
+   * animation panel.
+   */
   private final Launcher animation;
 
-  public ProcessMonitor(List<Ball> balls, Launcher animation) {
+  /**
+   * Constructor for ProcessMonitor object
+   * @param balls - the list of balls currently in the program
+   * @param animation - the JPanel object
+   */
+  public ProcessMonitor(List<Ball> balls, final Launcher animation) {
     this.balls = balls;
     this.animation = animation;
   }
@@ -37,38 +48,40 @@ public class ProcessMonitor implements Runnable {
     while (true) {
       try {
         Process process = Runtime.getRuntime().exec("ps -eo pid,comm,%cpu");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        BufferedReader reader = new BufferedReader(
+            new InputStreamReader(process.getInputStream()));
         String line;
-
         // Read the output line by line
-        List<String> pids = new ArrayList<>();
+        List<String> pids = new ArrayList<>(); // list of current processes
         while ((line = reader.readLine()) != null) {
           if (line.contains("PID")) {
             continue; // Skip header
           }
           String[] fields = line.trim().split("\\s+");
-          if (fields.length > 3) {
+          if (fields.length > 3) { // to prevent obtaining wrong field
             continue;
           }
           String pid = fields[0];
           String command = fields[1];
           double cpuUsage = Double.parseDouble(fields[2]);
-          if (cpuUsage > 0.0) {
+            pids.add(pid); // update pid list with current pid
+            // if ball already in program, update cpuUsage
             if (matchingBallWithPid(this.balls, pid) != null) {
               Ball selectedBall = matchingBallWithPid(this.balls, pid);
               if (selectedBall != null) {
                 selectedBall.setCpuUsage(cpuUsage);
               }
-            }
-            pids.add(pid);
-            if ((this.animation.getWidth() < 1) || (this.animation.getHeight() < 1)) {
-              this.balls.add(new Ball(new Random().nextInt(100),
-                  new Random().nextInt(100), cpuUsage, pid, this.animation));
             } else {
-              int x = new Random().nextInt(this.animation.getWidth());
-              int y = new Random().nextInt(this.animation.getHeight());
-              this.balls.add(new Ball(x, y, cpuUsage, pid, this.animation));
-            }
+              // else create ball the ball and add it to the program
+              if ((this.animation.getWidth() < 1)
+                  || (this.animation.getHeight() < 1)) {
+                this.balls.add(new Ball(new Random().nextInt(100),
+                    new Random().nextInt(100), cpuUsage, pid, this.animation));
+              } else {
+                int x = new Random().nextInt(this.animation.getWidth());
+                int y = new Random().nextInt(this.animation.getHeight());
+                this.balls.add(new Ball(x, y, cpuUsage, pid, this.animation));
+              }
           }
         }
 
