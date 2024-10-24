@@ -25,6 +25,18 @@ public class ProcessMonitor implements Runnable {
    * animation panel.
    */
   private final Launcher animation;
+  /**
+   * The number of ideal fields to index into.
+   */
+  private static final int NUM_IDEAL_FIELD = 3;
+  /**
+   * Upper bound of random integer generation for placing ball.
+   */
+  private static final int UPPER_BOUND_RAND = 100;
+  /**
+   * ms to sleep thread before next poll to update processes.
+   */
+  private static final int THREAD_SLEEP_TIME = 5000;
 
   /**
    * Constructor for ProcessMonitor object.
@@ -53,18 +65,20 @@ public class ProcessMonitor implements Runnable {
   public void run() {
     while (true) {
       try {
+        // Runtime.getRuntime() code gotten from ChatGPT
         Process process = Runtime.getRuntime().exec("ps -eo pid,comm,%cpu");
         BufferedReader reader = new BufferedReader(
             new InputStreamReader(process.getInputStream()));
         String line;
         // Read the output line by line
-        List<String> pidList = new ArrayList<>(); // list of current processes
+        List<String> pidList = new ArrayList<>(); // list of read processes
         while ((line = reader.readLine()) != null) {
           if (line.contains("PID")) {
             continue; // Skip header
           }
           String[] fields = line.trim().split("\\s+");
-          if (fields.length > 3) { // to prevent obtaining wrong field
+          // to prevent obtaining wrong field
+          if (fields.length > NUM_IDEAL_FIELD) {
             continue;
           }
           String pid = fields[0];
@@ -81,8 +95,8 @@ public class ProcessMonitor implements Runnable {
               // else create ball the ball and add it to the program
               if ((this.animation.getWidth() < 1)
                   || (this.animation.getHeight() < 1)) {
-                this.balls.add(new Ball(new Random().nextInt(100),
-                    new Random().nextInt(100), cpuUsage, pid,
+                this.balls.add(new Ball(new Random().nextInt(UPPER_BOUND_RAND),
+                    new Random().nextInt(UPPER_BOUND_RAND), cpuUsage, pid,
                     this.determineProcessType(command), this.animation));
               } else {
                 int x = new Random().nextInt(this.animation.getWidth());
@@ -92,9 +106,10 @@ public class ProcessMonitor implements Runnable {
               }
           }
         }
-
+        // remove ball associated with pid if process no longer running
         this.balls.removeIf(ball -> !pidList.contains(ball.getPid()));
-        Thread.sleep(5000); // Sleep for 5 seconds before the next poll
+        // Sleep for 5 seconds before the next poll
+        Thread.sleep(THREAD_SLEEP_TIME);
       } catch (Exception e) {
         e.printStackTrace();
       }

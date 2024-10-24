@@ -18,24 +18,20 @@ import javax.swing.JPanel;
  * @author Stephanie Olaiya Date: 9/20/24
  */
 public class Launcher extends JPanel {
-
-
   /**
    * Main program.
    * @param args - arguments
    * @throws InterruptedException - InterruptException for using threads
    */
   public static void main(final String[] args) throws InterruptedException {
-    int windowWidth = 1000; // window width
-    int windowHeight = 800; // window height
     JFrame window = new JFrame("Bouncing Balls showing System Processes");
     Launcher animation = new Launcher();
     window.add(animation);
     window.setUndecorated(true);
-    window.setSize(windowWidth, windowHeight);
+    window.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     window.setShape(
         new Ellipse2D.Double(0, 0,
-            windowWidth, windowHeight)); // make frame an ellipse
+            WINDOW_WIDTH, WINDOW_HEIGHT)); // make frame an ellipse
     window.setLocationRelativeTo(null); // Center the window
     window.setVisible(true);
     window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,15 +39,25 @@ public class Launcher extends JPanel {
     while (true) {
       animation.move(); // make all items in launcher animation move
       animation.repaint(); // repaint after changes
-      Thread.sleep(10);
+      Thread.sleep(REPAINT_TIME);
     }
   }
-
   /**
    * List of balls in animation.
    */
   private final List<Ball> balls = new CopyOnWriteArrayList<>();
-
+  /**
+   * Width of Jframe window.
+   */
+  private static final int WINDOW_WIDTH = 1000;
+  /**
+   * Height of Jframe window.
+   */
+  private static final int WINDOW_HEIGHT = 800;
+  /**
+   * ms time to update animation frame .
+   */
+  private static final int REPAINT_TIME = 10;
   /**
    * Constructor for game launcher.
    */
@@ -60,7 +66,7 @@ public class Launcher extends JPanel {
   }
 
   /**
-   * Does painting on the JPanel
+   * Does painting on the JPanel.
    * @param g  the <code>Graphics</code> context in which to paint
    */
   @Override

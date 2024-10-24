@@ -158,6 +158,7 @@ public class Ball {
    */
   private void frameCollision() {
       // formula for ellipse bounds: (x-h)²/a² + (y-k)²/b² = 1
+      // Ellipse bounds calculation adapted from AI generated code.
       // Ellipse center
       double h = this.animation.getWidth() / 2.0;
       double k = this.animation.getHeight() / 2.0;
@@ -172,7 +173,7 @@ public class Ball {
 
       // Check if the ball's edge is within the ellipse boundary
       double distance = normalizedX * normalizedX + normalizedY * normalizedY;
-      boolean collided = distance > 1
+      boolean collided = distance >= 1
           + ((double) (this.diameter / 2)
           * (double) (this.diameter / 2) / (a * b));
       // reverse direction of ball has collided
