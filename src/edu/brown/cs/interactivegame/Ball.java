@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.Objects;
-import java.util.Random;
 
 /**
  * Ball A ball object that moves around the screen.
@@ -39,14 +38,9 @@ public class Ball {
    */
   private final int diameter;
   /**
-   * Random variable initializer.
-   */
-  private final Random r = new Random();
-  /**
    * Color of the ball. Randomly generated
    */
-  private final Color ballColor = new Color(
-      this.r.nextInt(256), this.r.nextInt(256), this.r.nextInt(256));
+  private Color ballColor;
   /**
    * cpuUsage of process assigned to ball.
    */
@@ -69,19 +63,23 @@ public class Ball {
    * pid, and Launcher object where ball moves.
    * in.
    *
-   * @param x         - horizontal position
-   * @param y         - vertical position
-   * @param cpuUsage    - cpuUsage of process assigned to ball
-   * @param pid        - pid of process assigned to ball
-   * @param animation - Launcher object where ball moves in
+   * @param xPos         - horizontal position
+   * @param yPos         - vertical position
+   * @param usage    - cpuUsage of process assigned to ball
+   * @param processPid        - pid of process assigned to ball
+   * @param  processType       - type of process assigned to ball
+   * @param launcherAnimation - Launcher object where ball moves in
    */
-  public Ball(int x, int y, double cpuUsage, String pid, Launcher animation) {
-    this.x = x;
-    this.y = y;
-    this.cpuUsage = cpuUsage;
-    this.pid = pid;
-    this.diameter = (int) (this.minSize + cpuUsage * this.scale);
-    this.animation = animation;
+  public Ball(final int xPos, final int yPos,
+      final double usage, final String processPid,
+      final ProcessType processType, final Launcher launcherAnimation) {
+    this.x = xPos;
+    this.y = yPos;
+    this.cpuUsage = usage;
+    this.pid = processPid;
+    this.diameter = (int) (this.minSize + usage * this.scale);
+    this.animation = launcherAnimation;
+    this.determineColor(processType);
   }
 
   /**
@@ -94,10 +92,10 @@ public class Ball {
 
   /**
    * Setter method for ball cpuUsage.
-   * @param cpuUsage - new cpuUsage
+   * @param newCpuUsage - new cpuUsage
    */
-  public void setCpuUsage(double cpuUsage) {
-    this.cpuUsage =  cpuUsage;
+  public void setCpuUsage(final double newCpuUsage) {
+    this.cpuUsage =  newCpuUsage;
   }
 
   /**
@@ -114,7 +112,7 @@ public class Ball {
    *
    * @param g2d - Graphics2D object
    */
-  public void paint(Graphics2D g2d) {
+  public void paint(final Graphics2D g2d) {
     // adding a single ball
     g2d.fillOval(this.x, this.y, this.diameter, this.diameter);
     g2d.setColor(this.ballColor);
@@ -183,4 +181,18 @@ public class Ball {
         this.speedY *= -1;
       }
   }
+
+  /**
+   * Determine the color of a ball based on its associated processType.
+   * @param pType - ProcessType of associated process.
+   */
+    private void determineColor(final ProcessType pType) {
+      switch (pType) {
+        case APPLICATION -> this.ballColor = Color.PINK;
+        case SYSTEM -> this.ballColor = Color.CYAN;
+        case USR -> this.ballColor = Color.ORANGE;
+        case OTHER -> this.ballColor = Color.BLACK;
+        default -> this.ballColor = Color.BLACK;
+      }
+    }
 }

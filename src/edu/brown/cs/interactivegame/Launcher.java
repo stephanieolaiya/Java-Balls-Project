@@ -34,7 +34,8 @@ public class Launcher extends JPanel {
     window.setUndecorated(true);
     window.setSize(windowWidth, windowHeight);
     window.setShape(
-        new Ellipse2D.Double(0, 0, windowWidth, windowHeight)); // make frame an ellipse
+        new Ellipse2D.Double(0, 0,
+            windowWidth, windowHeight)); // make frame an ellipse
     window.setLocationRelativeTo(null); // Center the window
     window.setVisible(true);
     window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -59,30 +60,11 @@ public class Launcher extends JPanel {
   }
 
   /**
-   * Returns the list of balls that are currently in the animation launcher.
-   *
-   * @return the list of balls that are currently in the animation launcher.
-   */
-  public List<Ball> getBalls() {
-    return this.balls;
-  }
-
-  /**
-   * Adds random ball at a given location. Used to manually add balls to program
-   * @param x -
-   * @param y
-   */
-  public void addBall(int x, int y) {
-    Ball ball = new Ball(x, y, 4.0, "", this);
-    this.balls.add(ball);
-  }
-
-  /**
    * Does painting on the JPanel
    * @param g  the <code>Graphics</code> context in which to paint
    */
   @Override
-  public void paint(Graphics g) {
+  public void paint(final Graphics g) {
     super.paint(g); // cleans the screen after repaint
     Graphics2D g2d = (Graphics2D) g;
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
