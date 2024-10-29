@@ -28,11 +28,11 @@ public class Ball {
   /**
    * speed of ball in x direction.
    */
-  private int speedX = 2;
+  private int speedX = 1;
   /**
    * speed of ball in y direction.
    */
-  private int speedY = 2;
+  private int speedY = 1;
   /**
    * Diameter of the ball.
    */
