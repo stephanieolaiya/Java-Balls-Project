@@ -1,3 +1,29 @@
+/**
+ * Ball.java
+ * Handle creating and updating ball objects.
+ * v1.0
+ * 2024-11-12
+ * MIT License
+ * Copyright (c) 2024 Brown University -- Stephanie Olaiya
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
 package edu.brown.cs.interactivegame;
 
 import java.awt.Color;
@@ -49,17 +75,9 @@ public class Ball {
    * pid of process assigned to ball.
    */
   private final String pid;
-  /**
-   * Scale of ball.
-   */
-  private final double scale = 0.3;
-  /**
-   * Minimum size of ball.
-   */
-  private final int minSize = 15;
 
   /**
-   * Constructs a new ball object with x position, y position, cpuUsage,
+   * Constructor for a ball object with x position, y position, cpuUsage,
    * pid, and Launcher object where ball moves.
    * in.
    *
@@ -70,14 +88,18 @@ public class Ball {
    * @param  processType       - type of process assigned to ball
    * @param launcherAnimation - Launcher object where ball moves in
    */
-  public Ball(final int xPos, final int yPos,
+  Ball(final int xPos, final int yPos,
       final double usage, final String processPid,
       final ProcessType processType, final Launcher launcherAnimation) {
     this.x = xPos;
     this.y = yPos;
     this.cpuUsage = usage;
     this.pid = processPid;
-    this.diameter = (int) (this.minSize + usage * this.scale);
+    // Scale of ball.
+    double scale = 0.3;
+    // Minimum size of ball.
+    int minSize = 15;
+    this.diameter = (int) (minSize + usage * scale);
     this.animation = launcherAnimation;
     this.determineColor(processType);
   }
@@ -86,7 +108,7 @@ public class Ball {
    *  Ball pid getter method.
    * @return the pid of ball
    */
-  public String getPid() {
+  protected String getPid() {
     return this.pid;
   }
 
@@ -94,14 +116,14 @@ public class Ball {
    * Setter method for ball cpuUsage.
    * @param newCpuUsage - new cpuUsage
    */
-  public void setCpuUsage(final double newCpuUsage) {
+  protected void setCpuUsage(final double newCpuUsage) {
     this.cpuUsage =  newCpuUsage;
   }
 
   /**
    * Dictates how ball object moves.
    */
-  public void move() {
+  protected void move() {
     this.frameCollision();
     this.x += this.speedX;
     this.y += this.speedY;
@@ -112,7 +134,7 @@ public class Ball {
    *
    * @param g2d - Graphics2D object
    */
-  public void paint(final Graphics2D g2d) {
+  protected void paint(final Graphics2D g2d) {
     // adding a single ball
     g2d.fillOval(this.x, this.y, this.diameter, this.diameter);
     g2d.setColor(this.ballColor);
@@ -157,13 +179,13 @@ public class Ball {
    * Reverses direction of movement of ball if it has collided with frame.
    */
   private void frameCollision() {
-      // formula for ellipse bounds: (x-h)²/a² + (y-k)²/b² = 1
+      // Formula for ellipse bounds: (x-h)²/a² + (y-k)²/b² = 1
       // Ellipse bounds calculation adapted from AI generated code.
       // Ellipse center
       double h = this.animation.getWidth() / 2.0;
       double k = this.animation.getHeight() / 2.0;
 
-      // Semi-major and semi-minor axes
+      // Instantiate semi-major and semi-minor axes
       double a = this.animation.getWidth() / 2.0;
       double b = this.animation.getHeight() / 2.0;
 
